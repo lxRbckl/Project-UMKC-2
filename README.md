@@ -4,7 +4,7 @@
 ### Installation
 ```
 cd
-git clone
+git clone https://github.com/lxRbckl/Project-UMKC-2.git
 
 pip3 install discord.py
 ```
