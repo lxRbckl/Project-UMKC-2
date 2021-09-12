@@ -1,4 +1,4 @@
-## Project-UMKC-2
+## Project UMKC 2
 > 
 
 ### Installation
