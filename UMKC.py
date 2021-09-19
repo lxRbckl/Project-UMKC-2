@@ -10,9 +10,9 @@ from discord.ext.commands import Bot
 
 
 # Declaration <
-UMKC = Bot(command_prefix = '', intents = Intents.all())
-admin = []
-token = ''
+UMKC = Bot(command_prefix = '.', intents = Intents.all())
+admin = ['Germx5000#5554', 'Revellioth#2794', 'lgarver2#1336']
+token = 'ODA2MjM1ODI3OTI2NTk3NjYz.YBmfoA.EgIfL3HO3NX7QuI-BAHL_4apJuM'
 
 # >
 
@@ -58,15 +58,40 @@ async def commandSet(ctx):
     '''  '''
 
     key = str(ctx.channel.id)
-    await ctx.message.delete()
     jsonVariable = jsonLoad('Schedule')
-    value = {'Name' : 'NA',
-             'Time' : 'NA',
-             'Link' : 'NA',
-             'Day' : []}
 
-    jsonVariable[key] = value
-    jsonDump('Schedule', jsonVariable)
+    # if New <
+    if (key not in jsonVariable.keys()):
+
+        value = {'Name' : 'NA',
+                 'Time' : 'NA',
+                 'Link' : 'NA',
+                 'Day' : []}
+
+        jsonVariable[key] = value
+
+        jsonDump('Schedule', jsonVariable)
+        await ctx.message.delete()
+
+    # >
+
+
+@UMKC.command(aliases = [])
+async def setName(ctx, arg):
+    ''' arg : str '''
+
+    key = str(ctx.channel.id)
+    jsonVariable = jsonLoad('Schedule')
+
+    # if Existing <
+    if (key in jsonVariable.keys()):
+
+        jsonVariable[key]['Name'] = arg
+
+        jsonDump('Schedule', jsonVariable)
+        await ctx.message.delete()
+
+    # >
 
 
 @UMKC.command(aliases = ['get', 'Get'])
