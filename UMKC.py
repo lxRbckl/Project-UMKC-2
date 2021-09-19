@@ -11,8 +11,8 @@ from discord.ext.commands import Bot
 
 # Declaration <
 UMKC = Bot(command_prefix = '.', intents = Intents.all())
-admin = ['Germx5000#5554', 'Revellioth#2794', 'lgarver2#1336']
-token = 'ODA2MjM1ODI3OTI2NTk3NjYz.YBmfoA.EgIfL3HO3NX7QuI-BAHL_4apJuM'
+admin = []
+token = ''
 
 # >
 
