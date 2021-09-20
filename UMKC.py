@@ -136,6 +136,13 @@ async def commandPurge(ctx):
     # >
 
 
+@UMKC.event
+async def on_ready():
+    '''  '''
+
+    pass
+
+
 # Main <
 if (__name__ == '__main__'):
 
