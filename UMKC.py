@@ -53,9 +53,38 @@ def jsonDump(*args):
     # >
 
 
+async def setName(key, jsonVariable, *args):
+    ''' arg : str '''
+
+    jsonVariable[key]['Name'] = args[0]
+    return jsonVariable
+
+
+async def setTime(key, jsonVariable, args):
+    ''' args[0] : str
+        args[1] : str '''
+
+    # if AM or PM <
+    if (args[1].upper() in ['AM', 'PM']):
+
+        strVariable = f'{args[0]} {args[1].upper()}'
+        jsonVariable[key]['Time'] = strVariable
+        return jsonVariable
+
+    # >
+
+
+async def setLink(key, jsonVariable, args):
+    ''' arg : str '''
+
+    jsonVariable[key]['Link'] = args
+    return jsonVariable
+
+
 @UMKC.command(aliases = ['set', 'Set'])
-async def commandSet(ctx):
-    '''  '''
+async def commandSet(ctx, *args):
+    ''' args[0] : str
+        args[n] : str '''
 
     key = str(ctx.channel.id)
     jsonVariable = jsonLoad('Schedule')
@@ -63,81 +92,24 @@ async def commandSet(ctx):
     # if New <
     if (key not in jsonVariable.keys()):
 
-        value = {'Name' : 'NA',
-                 'Time' : 'NA',
-                 'Link' : 'NA',
-                 'Day' : []}
-
-        jsonVariable[key] = value
+        jsonVariable[key] = {'Name' : 'NA',
+                             'Time' : 'NA',
+                             'Link' : 'NA',
+                             'Day' : []}
 
         jsonDump('Schedule', jsonVariable)
         await ctx.message.delete()
 
     # >
 
+    funcDict = {'Name' : setName(key, jsonVariable, args[1]),
+                'Link' : setLink(key, jsonVariable, args[1]),
+                'Time' : setTime(key, jsonVariable, args[1:])}
 
-@UMKC.command(aliases = [])
-async def setName(ctx, arg):
-    ''' arg : str '''
+    jsonVariable = await funcDict[args[0].title()]
 
-    key = str(ctx.channel.id)
-    jsonVariable = jsonLoad('Schedule')
-
-    # if Existing <
-    if (key in jsonVariable.keys()):
-
-        jsonVariable[key]['Name'] = arg
-
-        jsonDump('Schedule', jsonVariable)
-        await ctx.message.delete()
-
-    # >
-
-
-@UMKC.command(aliases = [])
-async def setTime(ctx, *args):
-    ''' args[0] : str
-        args[1] : str '''
-
-    key = str(ctx.channel.id)
-    jsonVariable = jsonLoad('Schedule')
-
-    # if Existing <
-    if (key in jsonVariable.keys()):
-
-        # if 'AM' or 'PM' <
-        if (args[1].upper() in ['AM', 'PM']):
-
-            jsonVariable[key]['Time'] = f'{args[0]} {args[1].upper()}'
-
-            jsonDump('Schedule', jsonVariable)
-            await ctx.message.delete()
-
-        # >
-
-        else:
-
-            pass
-
-    # >
-
-
-@UMKC.command(aliases = [])
-async def setLink(ctx, arg):
-    ''' arg : str '''
-
-    key = str(ctx.channel.id)
-    jsonVariable = jsonLoad('Schedule')
-
-    # if Existing <
-    if (key in jsonVariable.keys()):
-
-        jsonVariable[key]['Link'] = arg
-
-        jsonDump('Schedule', jsonVariable)
-        await ctx.message.delete()
-
-    # >
+    jsonDump('Schedule', jsonVariable)
+    await ctx.message.delete()
 
 
 @UMKC.command(aliases = ['get', 'Get'])
