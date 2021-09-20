@@ -10,7 +10,7 @@ from discord.ext.commands import Bot
 
 
 # Declaration <
-UMKC = Bot(command_prefix = '.', intents = Intents.all())
+UMKC = Bot(command_prefix = '', intents = Intents.all())
 admin = []
 token = ''
 
@@ -90,6 +90,34 @@ async def setName(ctx, arg):
 
         jsonDump('Schedule', jsonVariable)
         await ctx.message.delete()
+
+    # >
+
+
+@UMKC.command(aliases = [])
+async def setTime(ctx, *args):
+    ''' args[0] : str
+        args[1] : str '''
+
+    key = str(ctx.channel.id)
+    jsonVariable = jsonLoad('Schedule')
+
+    # if Existing <
+    if (key in jsonVariable.keys()):
+
+        # if 'AM' or 'PM' <
+        if (args[1].upper() in ['AM', 'PM']):
+
+            jsonVariable[key]['Time'] = f'{args[0]} {args[1].upper()}'
+
+            jsonDump('Schedule', jsonVariable)
+            await ctx.message.delete()
+
+        # >
+
+        else:
+
+            pass
 
     # >
 
