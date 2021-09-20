@@ -10,9 +10,9 @@ from discord.ext.commands import Bot
 
 
 # Declaration <
-UMKC = Bot(command_prefix = '', intents = Intents.all())
-admin = []
-token = ''
+UMKC = Bot(command_prefix = '.', intents = Intents.all())
+admin = ['Germx5000#5554', 'Revellioth#2794', 'lgarver2#1336']
+token = 'ODA2MjM1ODI3OTI2NTk3NjYz.YBmfoA.0l8rJ5d5syP_e4uGsAgF8aCvehc'
 
 # >
 
@@ -122,6 +122,24 @@ async def setTime(ctx, *args):
     # >
 
 
+@UMKC.command(aliases = [])
+async def setLink(ctx, arg):
+    ''' arg : str '''
+
+    key = str(ctx.channel.id)
+    jsonVariable = jsonLoad('Schedule')
+
+    # if Existing <
+    if (key in jsonVariable.keys()):
+
+        jsonVariable[key]['Link'] = arg
+
+        jsonDump('Schedule', jsonVariable)
+        await ctx.message.delete()
+
+    # >
+
+
 @UMKC.command(aliases = ['get', 'Get'])
 async def commandGet(ctx):
     '''  '''
@@ -130,6 +148,7 @@ async def commandGet(ctx):
     strVariable = '\n'.join(f'{k}\t{v}' for k, v in jsonVariable.items())
 
     await ctx.channel.send(strVariable, delete_after = 60)
+    await ctx.message.delete()
 
 
 @UMKC.command(aliases = ['purge', 'Purge'])
