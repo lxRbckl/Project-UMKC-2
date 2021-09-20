@@ -10,9 +10,9 @@ from discord.ext.commands import Bot
 
 
 # Declaration <
-UMKC = Bot(command_prefix = '.', intents = Intents.all())
-admin = ['Germx5000#5554', 'Revellioth#2794', 'lgarver2#1336']
-token = 'ODA2MjM1ODI3OTI2NTk3NjYz.YBmfoA.0l8rJ5d5syP_e4uGsAgF8aCvehc'
+UMKC = Bot(command_prefix = '', intents = Intents.all())
+admin = []
+token = ''
 
 # >
 
