@@ -1,6 +1,9 @@
 # Project UMKC 2
 
+
 # Import <
+from time import strftime
+from asyncio import sleep
 from json import load, dump
 from discord import Intents
 from discord.ext.commands import Bot
@@ -174,13 +177,50 @@ async def commandGet(ctx):
 async def on_ready():
     '''  '''
 
-    pass
-    #TODO
-    # add algorithm to check for status
-    # incorporate AM, PM time check
+    # while Online <
+    while (True):
+
+        await sleep(0.2)
+
+        # if New Minute <
+        if ((int(strftime('%S')) % 60) == 0):
+
+            schedule = jsonLoad('Schedule')
+            for k, v in schedule.items():
+
+                # if Class is On <
+                if (v['Status'] == 'On'):
+
+                    d = strftime('%A')
+                    check = jsonLoad('Setting')['checkChannel']
+                    for i in check[d]:
+
+                        h, m, f = strftime('%I %M %p').split()
+                        time = (f'{int(h)}{m} {f}' == v['Time'])
+                        day = (i in [j.title() for j in v['Day']])
+
+                        # if Day and Time <
+                        if (day and time):
+
+                            out = ':alarm_clock: {} :alarm_clock:'.format(v['Link'])
+
+                            await UMKC.get_channel(int(k)).send(out, delete_after = 540)
+                            await sleep(0.2)
+
+                        # >
+
+                # >
+
+            await sleep(58)
+
+        # >
+
+    # >
 
 
 # Main <
 if (__name__ == '__main__'):
 
     UMKC.run(token)
+
+# >
