@@ -2,6 +2,7 @@
   "adminRole" : [
   ],
   "bootChannel" : {
+    "Status" : "On",
     "Name" : "NA",
     "Time" : "NA",
     "Link" : "NA",

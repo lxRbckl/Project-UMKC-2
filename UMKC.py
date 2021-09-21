@@ -83,9 +83,10 @@ async def setTime(k, schedule, arg):
 
         strVariable = f'{arg[0]} {arg[1].upper()}'
         schedule[k]['Time'] = strVariable
-        return schedule
 
     # >
+
+    return schedule
 
 
 async def setLink(k, schedule, arg):
@@ -111,6 +112,21 @@ async def setDay(k, schedule, arg):
     return schedule
 
 
+async def setStatus(k, schedule, arg):
+    ''' k : str
+        schedule : dict
+        arg : str'''
+
+    # if On or Off <
+    if (arg.title() in ['On', 'Off']):
+
+        schedule[k]['Status'] = arg.title()
+
+    # >
+
+    return schedule
+
+
 @UMKC.command(aliases = ['set', 'Set'])
 async def commandSet(ctx, *args):
     ''' args[0] : str
@@ -132,7 +148,8 @@ async def commandSet(ctx, *args):
         funcDict = {'Day' : setDay(k, schedule, args[1:]),
                     'Name' : setName(k, schedule, args[1]),
                     'Link' : setLink(k, schedule, args[1]),
-                    'Time' : setTime(k, schedule, args[1:])}
+                    'Time' : setTime(k, schedule, args[1:]),
+                    'Status' : setStatus(k, schedule, args[1])}
 
         schedule = await funcDict[args[0].title()]
 
