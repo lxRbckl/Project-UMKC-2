@@ -170,6 +170,16 @@ async def commandGet(ctx):
     await ctx.message.delete()
 
 
+@UMKC.event
+async def on_ready():
+    '''  '''
+
+    pass
+    #TODO
+    # add algorithm to check for status
+    # incorporate AM, PM time check
+
+
 # Main <
 if (__name__ == '__main__'):
 
