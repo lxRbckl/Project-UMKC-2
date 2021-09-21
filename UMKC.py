@@ -1,5 +1,4 @@
-# Project UMKC 2 #
-
+# Project UMKC 2
 
 # Import <
 from json import load, dump
@@ -11,7 +10,6 @@ from discord.ext.commands import Bot
 
 # Declaration <
 UMKC = Bot(command_prefix = '', intents = Intents.all())
-admin = []
 token = ''
 
 # >
@@ -53,48 +51,64 @@ def jsonDump(*args):
     # >
 
 
-async def setName(key, jsonVariable, arg):
-    ''' key : str
-        jsonVariable : dict
+@UMKC.command(aliases = ['purge', 'Purge'])
+async def commandPurge(ctx):
+    '''  '''
+
+    # if Admin <
+    if (str(ctx.author) in jsonLoad('Setting')['adminRole']):
+
+        l = [int(k) for k in jsonLoad('Schedule').keys()]
+        [await UMKC.get_channel(k).purge() for k in l]
+
+    # >
+
+
+async def setName(k, schedule, arg):
+    ''' k : str
+        schedule : dict
         arg : str '''
 
-    jsonVariable[key]['Name'] = arg
-    return jsonVariable
+    schedule[k]['Name'] = arg
+    return schedule
 
 
-async def setTime(key, jsonVariable, arg):
-    ''' key : str
-        jsonVariable : dict
-        arg : tuple '''
+async def setTime(k, schedule, arg):
+    ''' k : str
+        schedule : dict
+        arg : str '''
 
     # if AM or PM <
     if (arg[1].upper() in ['AM', 'PM']):
 
         strVariable = f'{arg[0]} {arg[1].upper()}'
-        jsonVariable[key]['Time'] = strVariable
-        return jsonVariable
+        schedule[k]['Time'] = strVariable
+        return schedule
 
     # >
 
 
-async def setLink(key, jsonVariable, arg):
-    ''' key : str
-        jsonVariable : dict
+async def setLink(k, schedule, arg):
+    ''' k : str
+        schedule : dict
         arg : str '''
 
-    jsonVariable[key]['Link'] = arg
-    return jsonVariable
+    schedule[k]['Link'] = arg
+    return schedule
 
 
-async def setDay(key, jsonVariable, arg):
-    ''' key : str
-        jsonVariable : dict
+async def setDay(k, schedule, arg):
+    ''' k : str
+        schedule : dict
         arg : tuple '''
 
-    print(type(arg))
+    check, l = jsonLoad('Setting')['checkChannel'], []
     for i in arg:
 
-        print(i)
+        [l.append(i) for v in check.values() if (i.title() in v)]
+
+    schedule[k]['Day'] = l
+    return schedule
 
 
 @UMKC.command(aliases = ['set', 'Set'])
@@ -102,30 +116,29 @@ async def commandSet(ctx, *args):
     ''' args[0] : str
         args[n] : str '''
 
-    key = str(ctx.channel.id)
-    jsonVariable = jsonLoad('Schedule')
+    k = str(ctx.channel.id)
+    schedule = jsonLoad('Schedule')
 
-    # if New <
-    if (key not in jsonVariable.keys()):
+    # if New Channel <
+    if (k not in schedule.keys()):
 
-        jsonVariable[key] = {'Name' : 'NA',
-                             'Time' : 'NA',
-                             'Link' : 'NA',
-                             'Day' : []}
-
-        jsonDump('Schedule', jsonVariable)
-        await ctx.message.delete()
+        schedule[k] = jsonLoad('Setting')['bootChannel']
 
     # >
 
-    funcDict = {'Day' : setDay(key, jsonVariable, args[1:]),
-                'Name' : setName(key, jsonVariable, args[1]),
-                'Link' : setLink(key, jsonVariable, args[1]),
-                'Time' : setTime(key, jsonVariable, args[1:])}
+    # if args <
+    if (len(args) != 0):
 
-    jsonVariable = await funcDict[args[0].title()]
+        funcDict = {'Day' : setDay(k, schedule, args[1:]),
+                    'Name' : setName(k, schedule, args[1]),
+                    'Link' : setLink(k, schedule, args[1]),
+                    'Time' : setTime(k, schedule, args[1:])}
 
-    jsonDump('Schedule', jsonVariable)
+        schedule = await funcDict[args[0].title()]
+
+    # >
+
+    jsonDump('Schedule', schedule)
     await ctx.message.delete()
 
 
@@ -133,36 +146,14 @@ async def commandSet(ctx, *args):
 async def commandGet(ctx):
     '''  '''
 
-    jsonVariable = jsonLoad('Schedule')[str(ctx.channel.id)]
-    strVariable = '\n'.join(f'{k}\t{v}' for k, v in jsonVariable.items())
+    schedule = jsonLoad('Schedule')[str(ctx.channel.id)]
+    out = '\n'.join(f'{k}\t{v}' for k, v in schedule.items())
 
-    await ctx.channel.send(strVariable, delete_after = 15)
+    await ctx.channel.send(out, delete_after = 60)
     await ctx.message.delete()
-
-
-@UMKC.command(aliases = ['purge', 'Purge'])
-async def commandPurge(ctx):
-    '''  '''
-
-    # if Admin <
-    if (str(ctx.author) in admin):
-
-        l = [int(i) for i in jsonLoad('Schedule').keys()]
-        [await UMKC.get_channel(int(i)).purge() for i in l]
-
-    # >
-
-
-@UMKC.event
-async def on_ready():
-    '''  '''
-
-    pass
 
 
 # Main <
 if (__name__ == '__main__'):
 
     UMKC.run(token)
-
-# >
