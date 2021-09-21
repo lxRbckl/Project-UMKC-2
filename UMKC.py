@@ -53,32 +53,48 @@ def jsonDump(*args):
     # >
 
 
-async def setName(key, jsonVariable, *args):
-    ''' arg : str '''
+async def setName(key, jsonVariable, arg):
+    ''' key : str
+        jsonVariable : dict
+        arg : str '''
 
-    jsonVariable[key]['Name'] = args[0]
+    jsonVariable[key]['Name'] = arg
     return jsonVariable
 
 
-async def setTime(key, jsonVariable, args):
-    ''' args[0] : str
-        args[1] : str '''
+async def setTime(key, jsonVariable, arg):
+    ''' key : str
+        jsonVariable : dict
+        arg : tuple '''
 
     # if AM or PM <
-    if (args[1].upper() in ['AM', 'PM']):
+    if (arg[1].upper() in ['AM', 'PM']):
 
-        strVariable = f'{args[0]} {args[1].upper()}'
+        strVariable = f'{arg[0]} {arg[1].upper()}'
         jsonVariable[key]['Time'] = strVariable
         return jsonVariable
 
     # >
 
 
-async def setLink(key, jsonVariable, args):
-    ''' arg : str '''
+async def setLink(key, jsonVariable, arg):
+    ''' key : str
+        jsonVariable : dict
+        arg : str '''
 
-    jsonVariable[key]['Link'] = args
+    jsonVariable[key]['Link'] = arg
     return jsonVariable
+
+
+async def setDay(key, jsonVariable, arg):
+    ''' key : str
+        jsonVariable : dict
+        arg : tuple '''
+
+    print(type(arg))
+    for i in arg:
+
+        print(i)
 
 
 @UMKC.command(aliases = ['set', 'Set'])
@@ -102,7 +118,8 @@ async def commandSet(ctx, *args):
 
     # >
 
-    funcDict = {'Name' : setName(key, jsonVariable, args[1]),
+    funcDict = {'Day' : setDay(key, jsonVariable, args[1:]),
+                'Name' : setName(key, jsonVariable, args[1]),
                 'Link' : setLink(key, jsonVariable, args[1]),
                 'Time' : setTime(key, jsonVariable, args[1:])}
 
@@ -119,7 +136,7 @@ async def commandGet(ctx):
     jsonVariable = jsonLoad('Schedule')[str(ctx.channel.id)]
     strVariable = '\n'.join(f'{k}\t{v}' for k, v in jsonVariable.items())
 
-    await ctx.channel.send(strVariable, delete_after = 60)
+    await ctx.channel.send(strVariable, delete_after = 15)
     await ctx.message.delete()
 
 
