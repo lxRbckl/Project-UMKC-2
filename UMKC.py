@@ -2,6 +2,7 @@
 
 
 # Import <
+from os import path
 from time import strftime
 from asyncio import sleep
 from json import load, dump
@@ -12,6 +13,7 @@ from discord.ext.commands import Bot
 
 
 # Declaration <
+path = path.realpath(__file__)[:-8]
 UMKC = Bot(command_prefix = '', intents = Intents.all())
 token = ''
 
@@ -24,8 +26,8 @@ def jsonLoad(arg):
     # if Exists <
     try:
 
-        # Open JSON <
-        with open(f'{arg}.json', 'r') as fileVariable:
+        # Read JSON <
+        with open(f'{path}/{arg}.json', 'r') as fileVariable:
 
             return load(fileVariable)
 
@@ -46,8 +48,8 @@ def jsonDump(*args):
     ''' args[0] : str
         args[1] : dict '''
 
-    # Open JSON <
-    with open(f'{args[0]}.json', 'w') as fileVariable:
+    # Write JSON <
+    with open(f'{path}/{args[0]}.json', 'w') as fileVariable:
 
         dump(args[1], fileVariable, indent = 4)
 
