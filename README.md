@@ -3,6 +3,7 @@
 
 ### Installation
 ```
+pip3 install asyncio
 pip3 install discord.py
 
 cd
