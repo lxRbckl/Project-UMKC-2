@@ -207,7 +207,6 @@ async def on_ready():
                             out = ':alarm_clock: {} :alarm_clock:'.format(v['Link'])
 
                             await UMKC.get_channel(int(k)).send(out, delete_after = 540)
-                            await sleep(0.2)
 
                         # >
 
