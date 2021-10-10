@@ -23,10 +23,10 @@ token = ''
 def jsonLoad(arg):
     ''' arg : str '''
 
-    # if Exists <
+    # if File Exists <
     try:
 
-        # Read JSON <
+        # Read JSON File <
         with open(f'{path}/{arg}.json', 'r') as fileVariable:
 
             return load(fileVariable)
@@ -35,7 +35,9 @@ def jsonLoad(arg):
 
     # >
 
-    except:
+    except Exception as e:
+
+        print(e)
 
         # Create JSON <
         jsonDump(arg, {})
@@ -48,7 +50,7 @@ def jsonDump(*args):
     ''' args[0] : str
         args[1] : dict '''
 
-    # Write JSON <
+    # Write JSON File <
     with open(f'{path}/{args[0]}.json', 'w') as fileVariable:
 
         dump(args[1], fileVariable, indent = 4)
@@ -182,39 +184,28 @@ async def on_ready():
     # while Online <
     while (True):
 
-        await sleep(0.2)
-
         # if New Minute <
         if ((int(strftime('%S')) % 60) == 0):
 
             schedule = jsonLoad('Schedule')
-            for k, v in schedule.items():
+            for k, v in [[k, v] for k, v in schedule.items() if (v['Status'] == 'On')]:
 
-                # if Class is On <
-                if (v['Status'] == 'On'):
+                day, check = strftime('%A'), jsonLoad('Setting')['checkChannel']
+                for i in check[day]:
 
-                    d = strftime('%A')
-                    check = jsonLoad('Setting')['checkChannel']
-                    for i in check[d]:
+                    isDay = (i in [j.title() for j in v['Day']])
+                    hour, minute, mode = strftime('%I %M %p').split()
+                    isTime = (f'{int(hour)}{minute} {mode}' == v['Time'])
 
-                        h, m, f = strftime('%I %M %p').split()
-                        time = (f'{int(h)}{m} {f}' == v['Time'])
-                        day = (i in [j.title() for j in v['Day']])
+                    # if Day and Time <
+                    if (isDay and isTime):
 
-                        # if Day and Time <
-                        if (day and time):
+                        out = ':alarm_clock: {} :alarm_clock:'.format(v['Link'])
+                        await UMKC.get_channel(int(k)).send(out, delete_after = 60)
 
-                            out = ':alarm_clock: {} :alarm_clock:'.format(v['Link'])
+                    # >
 
-                            await UMKC.get_channel(int(k)).send(out, delete_after = 540)
-
-                        # >
-
-                # >
-
-            await sleep(58)
-
-        # >
+            await sleep(55)
 
     # >
 
