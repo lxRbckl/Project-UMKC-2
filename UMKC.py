@@ -187,6 +187,7 @@ async def on_ready():
         # if New Minute <
         if ((int(strftime('%S')) % 60) == 0):
 
+            # Iterate Valid Elements <
             schedule = jsonLoad('Schedule')
             for k, v in [[k, v] for k, v in schedule.items() if (v['Status'] == 'On')]:
 
@@ -204,6 +205,8 @@ async def on_ready():
                         await UMKC.get_channel(int(k)).send(out, delete_after = 60)
 
                     # >
+
+            # >
 
             await sleep(55)
 
