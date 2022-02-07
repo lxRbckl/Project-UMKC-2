@@ -46,7 +46,7 @@ def jsonLoad(arg):
         # >
 
 
-def jsonDump(*args):
+def jsonDump(*args) -> None:
     ''' args[0] : str
         args[1] : dict '''
 
